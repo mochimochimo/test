@@ -1,0 +1,220 @@
+
+#
+# alias TEST="read AAA ; echo ${AAA}"  #★ aliasコマンドは readコマンドは使えない！！
+# alias TEST="" ･･･ AAA() { ･･･        #★ aliasした後に関数を設定するとエラーになる！！
+#
+
+# ○ 注記
+#  ------------------------------------------------------------
+#  1.エイリアスはネストすることができます。
+#  2.エイリアスに変数を使用することはできません。これは、MEL がコマンド ライン インタプリタではないためです。
+#    ローカル変数に使用されるものをエイリアスする場合、MEL はその変数へのアクセスが有効範囲（スコープ）外で
+#    あれば検出することができません。MEL でこういったエラー（read: expensive）を検出することは困難です。
+#  3.エイリアスは、プロシージャやコマンドと同じ有効範囲を持ちます。 ローカル プロシージャをエイリアスする場合、
+#    ローカル プロシージャが有効範囲外になると、エイリアスは利用できなくなります。
+#  4."alias" は、ディレクティブ（指令）であってコマンドではありません。エイリアスは、実際にスクリプトが実行されるときで
+#    はなく、スクリプトが読み込まれたときに作成されます。したがって、ステートメントで作成するかコード パスに基づいていなければ、
+#    "alias" ディレクティブを設定することはできません。エイリアスは、コードが実行されるまでにすでに作成されています。
+#    エイリアスを条件付きで作成する場合、"eval" ディレクティブに埋め込んで実行時にコンパイルします。
+#  ------------------------------------------------------------
+#
+
+# log確認
+alias a="less /var/mail/yamanakayasuyuki /var/log/system.log /var/log/corecaptured.log /var/log/daily.out"
+# alias修正 & source反映
+alias aliasvim="vim /Users/yamanakayasuyuki/AliasTip ; source /Users/yamanakayasuyuki/Documents/Backup/MAC_AliasTip.txt"
+# postgres
+alias p="export PGPASSWORD='postgres' ; psql -p 5432 -U postgres"
+# mysql
+alias m=""
+# google辞書Export & git push
+alias googledictexport="pushd /Users/yamanakayasuyuki/local-work/Mac_tool/python/pyautogui ; python google_dict_export_and_zip.py ; popd "
+# game(OpenEmu : セーブデータあり)
+alias gamecd="cd '/Users/yamanakayasuyuki/Library/Application Support/OpenEmu/'"
+# work場所
+alias alphacd="cd /Users/yamanakayasuyuki/local-work/alpha"
+# git場所
+alias gitbash="pushd /Users/yamanakayasuyuki/Git ; echo '  pushdコマンドを実行しました。戻りたければpopdコマンドを実行して下さい'"
+# tool場所
+alias toolcd="cd /Users/yamanakayasuyuki/local-work/Mac_tool"
+# download場所
+alias downloadcd="cd /Users/yamanakayasuyuki/Downloads"
+# bash定型文作成
+alias bashmake='echo "bash定型文を作成します。 ※Cancel:【Ctrl + C】" ; read A ; cp -p /Users/yamanakayasuyuki/local-work/Mac_tool/bash/bashInit.sh ./'
+# python定型文作成
+alias pythonmake='echo "python定型文を作成します。 ※Cancel:【Ctrl + C】" ; read A ; cp -p /Users/yamanakayasuyuki/local-work/Mac_tool/python/Ref/pythonInit.py ./'
+# perl定型文作成
+alias perlmake='echo "perl定型文を作成します。 ※Cancel:【Ctrl + C】" ; read A ; cp -p /Users/yamanakayasuyuki/local-work/Mac_tool/perl/ref/perlInit.pl ./'
+# Traffic場所
+alias trafficcd="cd /Users/yamanakayasuyuki/Downloads/WVS2_QMTraffic-master"
+
+
+# ■ 参照用
+# Eclipseワーキングディレクトリ参照
+alias eclipseEcho=' echo "  Eclipseのワーキングディレクトリ一覧" ; find /Applications/Eclipse_2019-09.app/Contents -maxdepth 1 -type d | grep work | xargs ls -ldtrG'
+# vimマクロ「作成 / 編集 / 削除」の説明
+alias vimmacrodesc="cat ~/Documents/202001/vimMacroMemo.txt"
+# git log を見やすくする Ref: https://qiita.com/usizou/items/9e8ca22511b6d4e5a574
+alias gitlogview="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cd) %C(bold blue)<%an>%Creset' --date=format:'%Y/%m/%d %H:%M:%S'"
+
+
+# ■ docker
+# dockerフォルダ移動
+alias doccd="cd /Users/yamanakayasuyuki/docker/"
+# centos起動(docker)
+alias cent="cd /Users/yamanakayasuyuki/docker/centos ; docker ps | grep 'cent7.6:yamanakaMake' || (./docker.sh run ; ./docker.sh start) && ./docker.sh exec"
+# gitlab起動(docker)
+alias gitlab-docker="docker ps | grep gitlab_test || (cd /Users/yamanakayasuyuki/docker/gitlab ; ./docker.sh start)"
+# postgres起動(docker)
+alias Dpostgres='pushd /Users/yamanakayasuyuki/docker/postgres ; docker ps | grep '\''postgres'\'' || (./docker.sh start) ; echo -e "\nDockerでPostgresコンテナを起動コマンドを実行しました。\n$ psql -h localhost -p 15432 -U admin \n  PASS : admin \n  ※export PGPASSWORD=admin\n\n  ○ sqlのpostgresリストア   [ *sqlファイル参照 ]\n    for sqlFile in \`ls -1 *sql\`; do psql -h localhost -p 15432 -U admin admin -f \$sqlFile; done\n  ○ データベース削除\n    psql -h localhost -p 15432 -U admin admin -c \"DROP TABLE [テーブル名]\"\npushdコマンドを実行しました。戻りたければpopdコマンドを実行して下さい"'
+# mysql起動 (docker)
+alias Dmysql='cd /Users/yamanakayasuyuki/docker/mysql ; docker ps | grep '\''mysql'\'' || (./docker.sh start) ; echo -e "Dockerでmysqlコンテナを起動コマンドを実行しました。\n$ mysql -h localhost -P 33306 -u root -p --protocol=tcp\n  PASS : mysql \n  ※PASS無し : mysql -h localhost -P 33306 -u root -pmysql --protocol=tcp"'
+# dockerのpsql接続コマンド
+alias Dpsql='echo "Dockerのpostgresに接続します。Port:15432" ; export PGPASSWORD='\''admin'\'' ; psql -h localhost -p 15432 -U admin'
+# dockerのmysql接続コマンド
+alias Dmysqlconnect='echo "Dockerのmysqlに接続します。Port:33306" ; mysql -h localhost -P 33306 -u root -pmysql --protocol=tcp'
+# postgres admin table確認 (docker)
+alias Dpostgrestablechk="psql -h localhost -p 15432 -U admin admin -c \"\\d+\" ; echo -e \"  \$ psql -h localhost -p 15432 -U admin admin -c '\\d+'\n\""
+
+# 以下Dockerコマンド ★ D大文字始まり
+alias Dp="docker ps"
+alias Dpa="docker ps -a"
+alias Di="docker images"
+alias Dcu="docker-compose up -d"
+alias Dcub="docker-compose up -d --build"  # Docker File使用
+alias Dcdown="docker-compose down"
+De() {
+	echo "  ★ Command Execute : docker exec -it $1 /bin/bash"
+	docker exec -it $1 /bin/bash
+}
+
+# ■ Virtual Box
+# vdiファイル場所
+alias vircd="cd '/Users/yamanakayasuyuki/VirtualBox VMs'"
+# Virtual Boxログ
+alias virlogcd="cd /Users/yamanakayasuyuki/Library/VirtualBox"
+
+
+# ■ unixコマンド/操作
+alias .="cd ../"
+alias ..="cd ../../"
+alias ...="cd ../../../"
+alias ....="cd ../../../../"
+alias .....="cd ../../../../../"
+alias R="readlink -f "
+alias du="du -sh ./* | sort -h"
+
+####FuncTest
+aaa() {
+   echo "command :$1 $2 $3"
+}
+
+sub() {
+   echo "perl -pe \"s/$1/$2/g\" $3"
+   perl -pe "s/$1/$2/" $3
+}
+
+gsub() {
+    perl -pe "s#$1#$2#g" $3
+}
+
+insert() {
+    perl -pe "s#^#$1#g" $2
+}
+
+append() {
+    perl -pe "s#\$#$1#" $2
+}
+
+delete() {
+    perl -pe "s#$1##g" $2
+}
+
+# javaのソースの場所を提示(WVS2)
+findjavasrc() {
+	dirName=""
+	echo '  javaのsrcファイル一覧を示します'
+	echo '  ↓ ディレクトリを指定してください'
+	find /Applications/Eclipse_2019-09.app/Contents -maxdepth 2 -mindepth 2 -type d | grep com | grep work
+	read dirName
+	echo '------------------------------'
+	if [ "${dirName}" != "" ]; then
+	  find ${dirName} -type f | grep java | grep src | grep -v gen
+     pushd ${dirName}
+     echo '  pushdコマンドを実行しました。戻りたければpopdコマンドを実行して下さい'
+	else
+	  echo '  ディレクトリを指定して下さい'
+	fi
+}
+
+# postgres コマンド例
+postgreshelp () {
+	cat <<-EOF
+		  
+		    [ 定型文]: psql -h localhost -p 15432 -U admin admin -c "<SQLコマンド>;"
+		 
+		  ○ 接続
+		    # export PGPASSWORD=admin ; psql -h localhost -p 15432 -U admin admin 
+
+		  ○ CSV形式出力
+		    # psql -h localhost -p 15432 -U admin admin -A -F, -c "select * from [テーブル名];"
+		    <全て>
+		    # export PGPASSWORD=admin ; for i in \`psql -h localhost -p 15432 -U admin admin -A -F, -t -c "\d" | cut -d, -f 2\`; do psql -h localhost -p 15432 -U admin admin -A -F, -c "select * from \$i;" > \$i.csv; done # CSV出力
+		  
+		  ○ テーブル一覧
+		    # psql -h localhost -p 15432 -U admin admin -A -F, -t -c "\d" | cut -d, -f 2
+
+		  ○ カラム名からテーブル検索
+		    # psql -h localhost -p 15432 -U admin admin -c "select table_name, column_name from information_schema.columns WHERE column_name  = '知っているカラム名';"
+		  
+		  ○ テーブルDELETE
+		    # psql -h localhost -p 15432 -U admin admin -c "DROP TABLE [テーブル名]"
+		    <全て> : https://qiita.com/a-suenami/items/e231adc2e083ef9449f6
+		    ###psql -h localhost -p 15432 -U admin admin -c "drop schema public cascade;" ; psql -h localhost -p 15432 -U admin admin -c "create schema public;"
+		
+		  ○ リストア [ *sqlファイル参照 ]
+		    # for sqlFile in \`ls -1 *sql\`; do psql -h localhost -p 15432 -U admin admin -f \$sqlFile; done
+
+		  ■ Postgresメモ
+		    ------------------------------------------------------------
+		     ○メタコマンドとSQLを一緒に使う
+		       特定のコマンドの結果だけエンコーディングを変えたい、という時とかに便利です。 -cオプションでメタコマンドを使うと、
+		       ★メタコマンドのみが実行されてしまうので、echoコマンドでメタコマンドとSQLを出力してパイプでpsqlに流す、みたいな
+		         ことをやる必要があります。 メタコマンドは、バックスラッシュ2つで区切る事ができるので、複数のメタコマンドを使うこともできます。
+		         ★ https://masahikosawada.github.io/2018/03/16/%E3%82%88%E3%81%8F%E4%BD%BF%E3%81%86psql%E3%81%AE%E4%BE%BF%E5%88%A9%E6%8A%8010%E9%81%B8/
+		       # echo '\x \\\\ select * from NM_NODE_T;' | psql -h localhost -p 15432 -U admin admin
+
+		     ○ 実行計画について
+		       =# EXPLAIN ANALYZE select * from EMM_PORT_T;
+		       
+		          https://www.casleyconsulting.co.jp/blog/engineer/259/
+		       ・実行計画とは、クエリ実行にあたっての手順書のことである
+		       ・実行計画の取得には「EXPLAIN」文を使用する
+		       ・複雑な実行計画であっても、構造(ノードのツリー構造)は同じため、時間をかければ読むことは可能である
+		       ・「複数のSQLで迷った時」には、「EXPLAIN ANALYZE」で
+		         処理コストや処理時間を確認し、低い方、短い方のSQLを選択する
+		       ・「レスポンスが遅いと感じた時」には、実行計画を決定するための統計情報が古い可能性があるため、
+		         「EXPLAIN」と「EXPLAIN ANALYZE」で確認する
+		         「EXPLAIN」で取得したrowの値はプランナによって見積もられた行数で、
+		         「EXPLAIN ANALYZE」で取得したrowの値は実際に実行結果として取得した行数なので、
+		         rowの値がずれている場合は、統計情報が古いということになる
+		       ・統計情報が古い場合「ANALYZE」文で最新の統計情報を取得する
+		    ------------------------------------------------------------
+		  
+	EOF
+}
+
+yhelp () {
+	cat <<-EOF
+
+		  # vim /Users/yamanakayasuyuki/Documents/Backup/MAC_AliasTip.txt   # aliasvim
+		
+		■ alias :
+		  [ Dcdown | Dcu | Dcub | Di | Dmysql | Dmysqlconnect | Dp | Dpa | Dpostgres | Dpostgrestablechk | Dpsql | R | a | aliasvim | alphacd | bashmake | cent | doccd | downloadcd | du | eclipseEcho | gamecd | gitbash | gitlogview | gitlab-docker | googledictexport | m | p | perlmake | pythonmake | readlink | toolcd | trafficcd | vimmacrodesc | vircd | virlogcd ]
+		
+		■ function :
+		  [ aaa | sub | gsub | insert | append | delete | findjavasrc | postgreshelp | yhelp ]
+		
+	EOF
+}
+
